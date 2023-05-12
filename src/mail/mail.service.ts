@@ -2,7 +2,6 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Mail } from './mail.model';
-import { join } from 'path';
 
 @Injectable()
 export class MailService {
