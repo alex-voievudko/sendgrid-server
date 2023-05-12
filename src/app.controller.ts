@@ -1,12 +1,36 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { MailService } from './mail/mail.service';
+import { Mail } from './mail/mail.model';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly mailService: MailService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  getHealthStatus() {
+    return {
+      status: 'ok',
+    };
+  }
+
+  @Post('mail')
+  async sendMessage(@Body() data: Mail) {
+    // check if security key is correct
+    if (data.securityCode !== this.configService.get('SECURITY_CODE')) {
+      console.log(data.securityCode, this.configService.get('SECURITY_CODE'));
+      throw new UnauthorizedException('Invalid security code');
+    }
+    // send message
+    return await this.mailService.sendMessage(data);
   }
 }
