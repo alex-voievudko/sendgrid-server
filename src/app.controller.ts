@@ -23,7 +23,7 @@ export class AppController {
     };
   }
 
-  @Post('mail')
+  @Post('/api/mail')
   async sendMessage(@Body() data: Mail) {
     // check if security key is correct
     if (data.securityCode !== this.configService.get('SECURITY_CODE')) {
